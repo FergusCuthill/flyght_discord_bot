@@ -43,7 +43,7 @@ impl ConfigData {
             welcome_message: secret_store.get("message_id_welcome").unwrap().parse().unwrap()
         };
         let emoji_ids = EmojiIDs {
-            fmp: "🙆‍♀️".to_string(),
+            fmp: "🙋‍♀️".to_string(),
             flyght_member: "✅".to_string()
         };
         ConfigData {role_ids, message_ids, emoji_ids}
