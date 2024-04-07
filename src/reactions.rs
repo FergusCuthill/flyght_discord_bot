@@ -23,10 +23,8 @@ impl EventHandler for Bot {
         if add_reaction.message_id.get() == configs.message_ids.welcome_message {
             if add_reaction.emoji.unicode_eq(&configs.emoji_ids.fmp) {
                 add_reaction.member.unwrap().add_role(ctx.http, configs.role_ids.fmp).await.unwrap();
-                println!("FMP role added to user");
             } else if add_reaction.emoji.unicode_eq(&configs.emoji_ids.flyght_member) {
                 add_reaction.member.unwrap().add_role(ctx.http, configs.role_ids.flyght_member).await.unwrap();
-                println!("Flyght member role added to user");
             }
         }
     }
@@ -45,10 +43,8 @@ impl EventHandler for Bot {
         if removed_reaction.message_id.get() == configs.message_ids.welcome_message {
             if removed_reaction.emoji.unicode_eq(&configs.emoji_ids.fmp) {
                 remove_role(&ctx, removed_reaction, configs.role_ids.fmp).await;
-                println!("FMP role removed from user");
             } else if removed_reaction.emoji.unicode_eq(&configs.emoji_ids.flyght_member) {
                 remove_role(&ctx, removed_reaction, configs.role_ids.flyght_member).await;
-                println!("Flyght member role removed from user");
             }
         }
     }
