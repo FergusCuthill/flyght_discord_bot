@@ -15,8 +15,9 @@ struct Data {}
 type Error = Box<dyn std::error::Error + Send + Sync>;
 
 
+/// Function to configure discord interface
 async fn configure_discord(secret_store: SecretStore) -> ShuttleSerenity {
-    // Get the discord token set in `Secrets_dev.toml`
+    // Get the discord token set in either `Secrets_dev.toml` or `Secrets_prd.toml`
     let discord_configs = config_data::ConfigData::new(&secret_store);
     let discord_token = secret_store
         .get("DISCORD_TOKEN")
@@ -51,6 +52,11 @@ async fn configure_discord(secret_store: SecretStore) -> ShuttleSerenity {
 }
 
 
+/// Runs the application
+/// To run the application - use: shuttle run --secrets <secrets.toml>
+/// Replace <secrets.toml> with the secrets file you wish to use.
+/// cargo shuttle deploy --secrets <secrets.toml>
+/// Will deploy the application to the cloud.
 #[shuttle_runtime::main]
 async fn main(#[shuttle_runtime::Secrets] secret_store: SecretStore) -> ShuttleSerenity {
     configure_discord(secret_store).await

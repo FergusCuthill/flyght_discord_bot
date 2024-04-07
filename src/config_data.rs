@@ -1,6 +1,8 @@
 use serenity::prelude::TypeMapKey;
 use shuttle_runtime::SecretStore;
 
+
+/// Struct lists each role ID the app has
 #[derive(Debug)]
 pub struct RoleIDs {
     pub admin: u64,
@@ -11,17 +13,24 @@ pub struct RoleIDs {
     pub flyght_member: u64
 }
 
+
+/// Struct for set message IDs such as welcome message which is where the bot checks for role
+/// assignment reactions
 #[derive(Debug)]
 pub struct MessageIDs {
     pub welcome_message: u64
 }
 
+
+/// Struct for emoji IDs.
 #[derive(Debug)]
 pub struct EmojiIDs {
     pub fmp: String,
     pub flyght_member: String
 }
 
+/// Struct containing config data to be included in the Context argument for receiving discord
+/// messages.
 #[derive(Debug)]
 pub struct ConfigData {
     pub message_ids: MessageIDs,
@@ -30,6 +39,7 @@ pub struct ConfigData {
 }
 
 impl ConfigData {
+    /// Creates a new instance of ConfigData from values contained in the secrets store
     pub fn new(secret_store: &SecretStore) -> ConfigData {
         let role_ids = RoleIDs {
             admin: secret_store.get("role_id_admin").unwrap().parse().unwrap(),
@@ -50,6 +60,8 @@ impl ConfigData {
     }
 }
 
+/// Allows the Config data type to be included in a TypeMap - this is how it is passed as part of
+/// the Context.data argument for receiving discord events.
 impl TypeMapKey for ConfigData {
     type Value = ConfigData;
 }

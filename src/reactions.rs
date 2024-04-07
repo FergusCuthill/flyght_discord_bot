@@ -6,6 +6,8 @@ use crate::config_data::ConfigData;
 
 #[async_trait]
 impl EventHandler for Bot {
+    /// Predominantly used as a test function. Will reply with a greeting to anyone that puts !Hello
+    /// in the chat
     async fn message(&self, ctx: Context, msg: Message) {
         if msg.content == "!Hello" {
             let content = format!("Hello {}", msg.author);
@@ -49,6 +51,7 @@ impl EventHandler for Bot {
         }
     }
 
+    /// Function triggers when the application connects
     async fn ready(&self, _: Context, ready: Ready) {
         info!("{} is connected!", ready.user.name);
     }
