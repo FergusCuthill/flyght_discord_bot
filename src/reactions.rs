@@ -1,14 +1,15 @@
 use async_trait::async_trait;
-use serenity::all::{Context, EventHandler, Message, Reaction, Ready, RoleId};
+use serenity::all::{Context, EventHandler, Message, Reaction, Ready};
 use tracing::{error, info};
 use crate::Bot;
+use crate::config_data::ConfigData;
 
 #[async_trait]
 impl EventHandler for Bot {
     async fn message(&self, ctx: Context, msg: Message) {
-        if msg.content == "!howdy" {
-            println!("A user said howdy!");
-            if let Err(e) = msg.channel_id.say(&ctx.http, "worldio!").await {
+        if msg.content == "!Hello" {
+            let content = format!("Hello {}", msg.author);
+            if let Err(e) = msg.channel_id.say(&ctx.http, content).await {
                 error!("Error sending message: {:?}", e);
             }
         }
@@ -17,23 +18,38 @@ impl EventHandler for Bot {
     /// Function to run when a new reaction is detected
     /// Should assign roles based on reactions to welcome message
     async fn reaction_add(&self, ctx: Context, add_reaction: Reaction) {
-        if add_reaction.message_id.get() == 1223341046214299749 {
-            let fmp_role = 1222939701162278912;
-            add_reaction.member.unwrap().add_role(ctx.http, fmp_role).await.unwrap();
-            println!("FMP role added to user")
+        let data = ctx.data.read().await;
+        let configs = data.get::<ConfigData>().unwrap();
+        if add_reaction.message_id.get() == configs.message_ids.welcome_message {
+            if add_reaction.emoji.unicode_eq(&configs.emoji_ids.fmp) {
+                add_reaction.member.unwrap().add_role(ctx.http, configs.role_ids.fmp).await.unwrap();
+                println!("FMP role added to user");
+            } else if add_reaction.emoji.unicode_eq(&configs.emoji_ids.flyght_member) {
+                add_reaction.member.unwrap().add_role(ctx.http, configs.role_ids.flyght_member).await.unwrap();
+                println!("Flyght member role added to user");
+            }
         }
     }
 
     /// Function to run when a reaction is removed
     /// Should remove roles based on removed reaction to welcome message
     async fn reaction_remove(&self, ctx: Context, removed_reaction: Reaction) {
-        if removed_reaction.message_id.get() == 1223341046214299749 {
-            let fmp_role = 1222939701162278912;
+        async fn remove_role(ctx: &Context, removed_reaction: Reaction, role: u64) {
             let user_id = removed_reaction.user_id.expect("UserID should exist");
             let server = removed_reaction.guild_id.expect("Server ID should exist");
             let member = server.member(&ctx.http, user_id).await.unwrap();
-            member.remove_role(&ctx.http, fmp_role).await.unwrap();
-            println!("FMP role removed from user");
+            member.remove_role(&ctx.http, role).await.unwrap();
+        }
+        let data = ctx.data.read().await;
+        let configs = data.get::<ConfigData>().unwrap();
+        if removed_reaction.message_id.get() == configs.message_ids.welcome_message {
+            if removed_reaction.emoji.unicode_eq(&configs.emoji_ids.fmp) {
+                remove_role(&ctx, removed_reaction, configs.role_ids.fmp).await;
+                println!("FMP role removed from user");
+            } else if removed_reaction.emoji.unicode_eq(&configs.emoji_ids.flyght_member) {
+                remove_role(&ctx, removed_reaction, configs.role_ids.flyght_member).await;
+                println!("Flyght member role removed from user");
+            }
         }
     }
 
