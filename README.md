@@ -4,7 +4,7 @@ Bot to manage Flyght discord and related automations
 
 
 
-# Connecting to discord
+### Connecting to discord
 To run this bot, a valid Discord Token is needed. To get started log in to the [Discord developer portal](https://discord.com/developers/applications).
 
 1. Click the New Application button, name your application and click Create.
