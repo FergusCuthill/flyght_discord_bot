@@ -1,11 +1,16 @@
-# Serenity Hello World Bot with Shuttle
+# Flyght Discord Bot
 
-In this example we will deploy a Serenity bot with Shuttle that responds to the `!hello` command with `world!`. To run this bot we need a valid Discord Token. To get started log in to the [Discord developer portal](https://discord.com/developers/applications).
+Bot to manage Flyght discord and related automations
+
+
+
+# Connecting to discord
+To run this bot, a valid Discord Token is needed. To get started log in to the [Discord developer portal](https://discord.com/developers/applications).
 
 1. Click the New Application button, name your application and click Create.
 2. Navigate to the Bot tab in the lefthand menu, and add a new bot.
-3. On the bot page click the Reset Token button to reveal your token. Put this token in your `Secrets.toml`. It's very important that you don't reveal your token to anyone, as it can be abused. Create a `.gitignore` file to omit your `Secrets.toml` from version control.
-4. For the sake of this example, you also need to scroll down on the bot page to the Message Content Intent section and enable that option.
+3. On the bot page click the Reset Token button to reveal your token. Put this token in your `Secrets.toml`. Note that other filenames can be used. The following has to be added to the run/deploy command in that case: --secrets <secrets_file> (replace <secrets_file> with the file name). Make sure the file is covered by the gitignore. 
+4. Scroll down in the discord developer portal and add relevant permissions.
 
 To add the bot to a server we need to create an invite link.
 

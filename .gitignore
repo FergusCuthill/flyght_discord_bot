@@ -1,6 +1,5 @@
 /target
 .shuttle-storage
-Secrets_dev.toml
-Secrets_prd.toml
+Secrets*.toml
 *.env
 env_files
