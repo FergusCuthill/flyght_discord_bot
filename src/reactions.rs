@@ -56,7 +56,7 @@ impl EventHandler for Bot {
 
     /// Function triggers when the application connects
     async fn ready(&self, ctx: Context, ready: Ready) {
-        info!("{} is connected!", ready.user.name);
+        info!("{} is connected to server!", ready.user.name);
         let data = ctx.data.read().await;
         let configs = data.get::<ConfigData>().unwrap();
         let message_id = MessageId::from(configs.message_ids.bot_message);
