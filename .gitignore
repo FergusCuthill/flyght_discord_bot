@@ -1,4 +1,5 @@
 /target
+.idea/
 .shuttle-storage
 Secrets*.toml
 *.env
