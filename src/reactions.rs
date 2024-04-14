@@ -1,5 +1,8 @@
+use std::time::Duration;
+use async_std::task::sleep;
 use async_trait::async_trait;
-use serenity::all::{Context, EventHandler, Message, Reaction, Ready};
+use chrono;
+use serenity::all::{ChannelId, Context, EditMessage, EventHandler, Message, MessageId, Reaction, Ready};
 use tracing::{error, info};
 use crate::Bot;
 use crate::config_data::ConfigData;
@@ -52,7 +55,26 @@ impl EventHandler for Bot {
     }
 
     /// Function triggers when the application connects
-    async fn ready(&self, _: Context, ready: Ready) {
+    async fn ready(&self, ctx: Context, ready: Ready) {
         info!("{} is connected!", ready.user.name);
+        let data = ctx.data.read().await;
+        let configs = data.get::<ConfigData>().unwrap();
+        let message_id = MessageId::from(configs.message_ids.bot_message);
+        let channel_id = ChannelId::from(configs.channel_ids.bot_management);
+        let message = ctx.http.get_message(channel_id, message_id).await.unwrap();
+        let current_time = chrono::offset::Utc::now();
+        let content = format!("Bot started up at: {}", current_time);
+        let s_message = message.reply(&ctx.http, content).await.expect("Reply should work");
+        let content = format!("Bot checking in at: {}", current_time);
+        let mut c_message = s_message.reply(&ctx.http, content).await.expect("Reply should work");
+
+        loop {
+            sleep(Duration::from_secs(10)).await;
+            let current_time = chrono::offset::Utc::now();
+            let content = format!("Bot checking in at: {}", current_time);
+            let mut msg_content = EditMessage::new();
+            msg_content = msg_content.content(content);
+            c_message.edit(&ctx.http, msg_content).await.expect("Reply should work")
+        }
     }
 }

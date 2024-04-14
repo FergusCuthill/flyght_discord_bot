@@ -2,6 +2,13 @@ use serenity::prelude::TypeMapKey;
 use shuttle_runtime::SecretStore;
 
 
+/// Channel used for managing the bot
+#[derive(Debug)]
+pub struct ChannelIDs {
+    pub bot_management: u64
+}
+
+
 /// Struct lists each role ID the app has
 #[derive(Debug)]
 pub struct RoleIDs {
@@ -18,7 +25,8 @@ pub struct RoleIDs {
 /// assignment reactions
 #[derive(Debug)]
 pub struct MessageIDs {
-    pub welcome_message: u64
+    pub welcome_message: u64,
+    pub bot_message: u64
 }
 
 
@@ -33,6 +41,7 @@ pub struct EmojiIDs {
 /// messages.
 #[derive(Debug)]
 pub struct ConfigData {
+    pub channel_ids: ChannelIDs,
     pub message_ids: MessageIDs,
     pub role_ids: RoleIDs,
     pub emoji_ids: EmojiIDs
@@ -41,6 +50,9 @@ pub struct ConfigData {
 impl ConfigData {
     /// Creates a new instance of ConfigData from values contained in the secrets store
     pub fn new(secret_store: &SecretStore) -> ConfigData {
+        let channel_ids = ChannelIDs {
+            bot_management: secret_store.get("channel_id_bot").unwrap().parse().unwrap()
+        };
         let role_ids = RoleIDs {
             admin: secret_store.get("role_id_admin").unwrap().parse().unwrap(),
             committee: secret_store.get("role_id_committee").unwrap().parse().unwrap(),
@@ -50,13 +62,14 @@ impl ConfigData {
             flyght_member: secret_store.get("role_id_flyght_member").unwrap().parse().unwrap()
         };
         let message_ids = MessageIDs {
-            welcome_message: secret_store.get("message_id_welcome").unwrap().parse().unwrap()
+            welcome_message: secret_store.get("message_id_welcome").unwrap().parse().unwrap(),
+            bot_message: secret_store.get("message_id_bot").unwrap().parse().unwrap()
         };
         let emoji_ids = EmojiIDs {
             fmp: "🙋‍♀️".to_string(),
             flyght_member: "✅".to_string()
         };
-        ConfigData {role_ids, message_ids, emoji_ids}
+        ConfigData {channel_ids, role_ids, message_ids, emoji_ids}
     }
 }
 
